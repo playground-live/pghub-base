@@ -1,18 +1,19 @@
 require "support_developer_github/base/version"
+require "support_developer_github/engine"
+require 'support_developer_github/config'
 require "support_developer_github/github_api"
+require "mechanize"
 
 module SupportDeveloperGithub
   module Base
     LGTM_MARKDOWN_PATTERN = %r{(!\[LGTM\]\(.+\))\]}
-    REG_ORGANIZATION      = %r{#{ENV['GITHUB_ORGANIZATION']}\/}
+    REG_ORGANIZATION      = %r{#{SupportDeveloperGithub.config.github_organization}\/}
     @webhook_params = nil
-
-    def self.configure
 
     def process_webhook(params)
       @webhook_params = params
       if input.include?('LGTM') && !input.include?('[LGTM]')
-        # post_lgtm_image
+        post_lgtm_image
       end
 
       case @webhook_params[:action]
@@ -22,8 +23,6 @@ module SupportDeveloperGithub
         comment_client = GithubAPI.new(issue_path)
         comment_client.post(content)
       end
-
-      render :nothing
     end
 
     private
@@ -59,7 +58,7 @@ module SupportDeveloperGithub
     end
 
     def issue_path_from(input)
-      ref_issue_url            = %r{ref https:\/\/github.com\/#{ENV['GITHUB_ORGANIZATION']}\/.+\/\d+}
+      ref_issue_url            = %r{ref https:\/\/github.com\/#{SupportDeveloperGithub.config.github_organization}\/.+\/\d+}
       ref_completion_issue_url = %r{ref #\d+}
 
       if input.match(ref_issue_url).present?

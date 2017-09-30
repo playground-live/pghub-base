@@ -1,3 +1,4 @@
+require 'support_developer_github/config'
 require 'support_developer_github/github_api/connection'
 
 class GithubAPI
@@ -12,7 +13,7 @@ class GithubAPI
     private
 
     def issue_response
-      response = connection.get("#{issue_path}?access_token=#{ENV['GITHUB_ACCESS_TOKEN']}")
+      response = connection.get("#{issue_path}?access_token=#{SupportDeveloperGithub.config.github_access_token}")
       JSON.parse(response.body)
     end
   end
