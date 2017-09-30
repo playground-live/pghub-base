@@ -7,6 +7,8 @@ module SupportDeveloperGithub
     REG_ORGANIZATION      = %r{#{ENV['GITHUB_ORGANIZATION']}\/}
     @@webhook_params = nil
 
+    def self.configure
+
     def process_webhook(params)
       @@webhook_params = params
       if input.include?('LGTM') && !input.include?('[LGTM]')
