@@ -1,10 +1,10 @@
 require "support_developer_github/base/version"
+require "support_developer_github/github_api"
 
 module SupportDeveloperGithub
   module Base
     LGTM_MARKDOWN_PATTERN = %r{(!\[LGTM\]\(.+\))\]}
     REG_ORGANIZATION      = %r{#{ENV['GITHUB_ORGANIZATION']}\/}
-
     @@webhook_params = nil
 
     def process_webhook(params)

@@ -1,3 +1,6 @@
+require 'support_developer_github/github_api/issue'
+require 'support_developer_github/github_api/comment'
+
 class GithubAPI
   include Issue
   include Comment

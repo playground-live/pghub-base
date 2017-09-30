@@ -1,3 +1,5 @@
+require 'support_developer_github/github_api/connection'
+
 class GithubAPI
   module Issue
     include Connection
