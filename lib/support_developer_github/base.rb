@@ -5,17 +5,17 @@ module SupportDeveloperGithub
   module Base
     LGTM_MARKDOWN_PATTERN = %r{(!\[LGTM\]\(.+\))\]}
     REG_ORGANIZATION      = %r{#{ENV['GITHUB_ORGANIZATION']}\/}
-    @@webhook_params = nil
+    @webhook_params = nil
 
     def self.configure
 
     def process_webhook(params)
-      @@webhook_params = params
+      @webhook_params = params
       if input.include?('LGTM') && !input.include?('[LGTM]')
         # post_lgtm_image
       end
 
-      case @@webhook_params[:action]
+      case @webhook_params[:action]
       when 'opened', 'edited', 'reopened', 'submitted', 'created'
         issue_client = GithubAPI.new(issue_path_from(input))
         content = issue_client.get_title
@@ -43,18 +43,18 @@ module SupportDeveloperGithub
     end
 
     def input
-      if %w[opened edited reopened created submitted].include?(@@webhook_params[:action])
-        if @@webhook_params[:comment]
-          @@webhook_params[:comment][:body]
-        elsif @@webhook_params[:review]
-          @@webhook_params[:review][:body]
-        elsif @@webhook_params[:issue]
-          @@webhook_params[:issue][:body]
+      if %w[opened edited reopened created submitted].include?(@webhook_params[:action])
+        if @webhook_params[:comment]
+          @webhook_params[:comment][:body]
+        elsif @webhook_params[:review]
+          @webhook_params[:review][:body]
+        elsif @webhook_params[:issue]
+          @webhook_params[:issue][:body]
         else
-          @@webhook_params[:pull_request][:body]
+          @webhook_params[:pull_request][:body]
         end
       else
-        raise "#{@@webhook_params[:action]} is invalid action."
+        raise "#{@webhook_params[:action]} is invalid action."
       end
     end
 
@@ -79,10 +79,10 @@ module SupportDeveloperGithub
     end
 
     def issue_path
-      if %w[opened edited reopened created submitted].include?(@@webhook_params[:action])
-        path = @@webhook_params[:issue].present? ? @@webhook_params[:issue][:url] : @@webhook_params[:pull_request][:issue_url]
+      if %w[opened edited reopened created submitted].include?(@webhook_params[:action])
+        path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]
       else
-        raise "#{@@webhook_params[:action]} is invalid action."
+        raise "#{@webhook_params[:action]} is invalid action."
       end
 
       path.match(REG_ORGANIZATION).post_match
