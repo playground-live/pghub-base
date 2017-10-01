@@ -12,10 +12,7 @@ class GithubAPI
   private
 
   def issue_path
-    if @issue_path.present?
-      @issue_path
-    else
-      raise '@issue_pathが定義されていません'
-    end
+    raise '@issue_path is not defined.' if @issue_path.blank?
+    @issue_path
   end
 end

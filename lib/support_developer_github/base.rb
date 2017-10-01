@@ -46,10 +46,10 @@ module SupportDeveloperGithub
     def get_markdown_lgtm_from(url)
       agent = Mechanize.new
 
-      raise 'Random button is not found in http://lgtm.in' unless agent.get(url).link_with(text: 'Random')
+      raise 'Random button is not found in http://lgtm.in.' unless agent.get(url).link_with(text: 'Random')
       page = agent.get(url).link_with(text: 'Random').click
 
-      raise 'Markdown text is not found in http://lgtm.in' unless page.at('textarea#markdown')
+      raise 'Markdown text is not found in http://lgtm.in.' unless page.at('textarea#markdown')
       page.at('textarea#markdown').inner_text
     end
 
@@ -72,7 +72,7 @@ module SupportDeveloperGithub
     # TODO : issue_titleに移植
     def issue_path_from(input)
       reg_organization         = %r{#{SupportDeveloperGithub.config.github_organization}\/}
-      ref_issue_url            = %r{ref https:\/\/github.com\/} + reg_organization + %r{.+\/\d+}
+      ref_issue_url            = %r{ref https:\/\/github.com\/#{SupportDeveloperGithub.config.github_organization}\/.+\/\d+}
       ref_completion_issue_url = %r{ref #\d+}
 
       if input.match(ref_issue_url).present?
