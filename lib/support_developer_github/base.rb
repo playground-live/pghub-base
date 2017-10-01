@@ -6,12 +6,12 @@ require "mechanize"
 
 module SupportDeveloperGithub
   module Base
-    LGTM_MARKDOWN_PATTERN = %r{(!\[LGTM\]\(.+\))\]}
-    REG_ORGANIZATION      = %r{#{SupportDeveloperGithub.config.github_organization}\/}
+    LGTM_MARKDOWN_PATTERN = /(!\[LGTM\]\(.+\))\]/
     @webhook_params = nil
 
     def process_webhook(params)
       @webhook_params = params
+
       if input.include?('LGTM') && !input.include?('[LGTM]')
         post_lgtm_image
       end
@@ -58,12 +58,13 @@ module SupportDeveloperGithub
     end
 
     def issue_path_from(input)
+      reg_organization         = %r{#{SupportDeveloperGithub.config.github_organization}\/}
       ref_issue_url            = %r{ref https:\/\/github.com\/#{SupportDeveloperGithub.config.github_organization}\/.+\/\d+}
       ref_completion_issue_url = %r{ref #\d+}
 
       if input.match(ref_issue_url).present?
         matched_word = input.match(ref_issue_url)[0]
-        issue_url = matched_word.match(REG_ORGANIZATION).post_match
+        issue_url = matched_word.match(reg_organization).post_match
       elsif input.match(ref_completion_issue_url).present?
         matched_word = input.match(ref_completion_issue_url)[0]
         issue_num = matched_word.match(/#/).post_match
@@ -78,13 +79,15 @@ module SupportDeveloperGithub
     end
 
     def issue_path
+      reg_organization = %r{#{SupportDeveloperGithub.config.github_organization}\/}
+
       if %w[opened edited reopened created submitted].include?(@webhook_params[:action])
         path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]
       else
         raise "#{@webhook_params[:action]} is invalid action."
       end
 
-      path.match(REG_ORGANIZATION).post_match
+      path.match(reg_organization).post_match
     end
   end
 end
