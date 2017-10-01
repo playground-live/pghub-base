@@ -1,3 +1,5 @@
+# TODO : post_issueに移植
+
 require 'support_developer_github/config'
 require 'support_developer_github/github_api/connection'
 
