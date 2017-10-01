@@ -1,6 +1,5 @@
 require 'support_developer_github/config'
 require 'faraday'
-require 'faraday_middleware'
 
 class GithubAPI
   module Connection
@@ -9,8 +8,8 @@ class GithubAPI
                   ssl: { verify: true }) do |faraday|
         faraday.request :multipart
         faraday.request :url_encoded
+        faraday.response :raise_error
         faraday.adapter :net_http
-        faraday.use FaradayMiddleware::Instrumentation
       end
     end
   end

@@ -35,7 +35,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
 
   spec.add_dependency "faraday"
-  spec.add_dependency "faraday_middleware"
   # TODO : lgtmに移植
   spec.add_dependency "mechanize"
 end
