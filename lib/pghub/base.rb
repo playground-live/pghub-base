@@ -6,28 +6,31 @@ require 'pghub/github_api'
 module PgHub
   module Base
     @webhook_params = nil
+    VALID_ACTIONS = %w[
+      opened
+      edited
+      created
+      edited
+      review_requested
+      submitted
+    ]
 
     class << self
       def process_webhook(params)
         @webhook_params = params
 
+        return unless VALID_ACTIONS.include?(@webhook_params[:action])
+
         if defined? Lgtm
           Lgtm.post_to(issue_path) if input.include?('LGTM') && !input.include?('[LGTM]')
         end
 
-        case @webhook_params[:action]
-        when 'opened', 'edited', 'reopened', 'submitted', 'created'
-          IssueTitle.post_to(issue_path, input) if defined? IssueTitle
-        end
+        IssueTitle.post_to(issue_path, input) if defined? IssueTitle
       end
 
       private
 
       def input
-        unless  %w[opened edited reopened created submitted].include?(@webhook_params[:action])
-          raise "#{@webhook_params[:action]} is invalid action."
-        end
-
         if @webhook_params[:comment]
           @webhook_params[:comment][:body]
         elsif @webhook_params[:review]
@@ -41,12 +44,7 @@ module PgHub
 
       def issue_path
         reg_organization = %r{#{PgHub.config.github_organization}\/}
-
-        if %w[opened edited reopened created submitted].include?(@webhook_params[:action])
-          path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]
-        else
-          raise "#{@webhook_params[:action]} is invalid action."
-        end
+        path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]
 
         path.match(reg_organization).post_match
       end
