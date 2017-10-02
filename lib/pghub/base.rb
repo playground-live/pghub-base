@@ -2,20 +2,17 @@ require 'pghub/base/version'
 require 'pghub/engine'
 require 'pghub/config'
 require 'pghub/github_api'
-# TODO : lgtmに移植
-require 'mechanize'
 
 module PgHub
   module Base
-    # TODO : lgtmに移植
-    LGTM_MARKDOWN_PATTERN = /(!\[LGTM\]\(.+\))\]/
     @webhook_params = nil
 
     def process_webhook(params)
       @webhook_params = params
 
-      # TODO : lgtmをincludeしているかどうか判定
-      post_lgtm_image if input.include?('LGTM') && !input.include?('[LGTM]')
+      if defined? Lgtm
+        Lgtm.post_md_image(issue_path) if input.include?('LGTM') && !input.include?('[LGTM]')
+      end
 
       case @webhook_params[:action]
       when 'opened', 'edited', 'reopened', 'submitted', 'created'
@@ -30,31 +27,6 @@ module PgHub
     end
 
     private
-
-    # TODO : lgtmに移植
-    def post_lgtm_image
-      text = get_markdown_lgtm_from('http://lgtm.in')
-
-      if text =~ LGTM_MARKDOWN_PATTERN
-        image_md_link = Regexp.last_match[1]
-        # image_md_linkが正常なURLか判定する
-        comment_client = GithubAPI.new(issue_path)
-        comment_client.post(image_md_link)
-      else
-        raise 'Invalid text near "LGTM"'
-      end
-    end
-
-    # TODO : lgtmに移植
-    def get_markdown_lgtm_from(url)
-      agent = Mechanize.new
-
-      raise 'Random button is not found in http://lgtm.in.' unless agent.get(url).link_with(text: 'Random')
-      page = agent.get(url).link_with(text: 'Random').click
-
-      raise 'Markdown text is not found in http://lgtm.in.' unless page.at('textarea#markdown')
-      page.at('textarea#markdown').inner_text
-    end
 
     def input
       unless  %w[opened edited reopened created submitted].include?(@webhook_params[:action])
