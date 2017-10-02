@@ -17,12 +17,13 @@ module SupportDeveloperGithub
       # TODO : lgtmをincludeしているかどうか判定
       post_lgtm_image if input.include?('LGTM') && !input.include?('[LGTM]')
 
-      # TODO : issue-titleをincludeしているかどうか判定
       case @webhook_params[:action]
       when 'opened', 'edited', 'reopened', 'submitted', 'created'
-        # TODO : issue_titleで１つのメソッドにまとめる
+        # TODO : issue-titleをincludeしているかどうか判定
+        # TODO : 以下の２行をissue_titleに移植
         issue_client = GithubAPI.new(issue_path_from(input))
         content = issue_client.get_title
+
         comment_client = GithubAPI.new(issue_path)
         comment_client.post(content)
       end
@@ -34,12 +35,14 @@ module SupportDeveloperGithub
     def post_lgtm_image
       text = get_markdown_lgtm_from('http://lgtm.in')
 
-      raise 'Invalid text near "LGTM"' unless text =~ LGTM_MARKDOWN_PATTERN
-
-      image_md_link = Regexp.last_match[1]
-      # image_md_linkが正常なURLか判定する
-      comment_client = GithubAPI.new(issue_path)
-      comment_client.post(image_md_link)
+      if text =~ LGTM_MARKDOWN_PATTERN
+        image_md_link = Regexp.last_match[1]
+        # image_md_linkが正常なURLか判定する
+        comment_client = GithubAPI.new(issue_path)
+        comment_client.post(image_md_link)
+      else
+        raise 'Invalid text near "LGTM"'
+      end
     end
 
     # TODO : lgtmに移植
@@ -73,14 +76,13 @@ module SupportDeveloperGithub
     def issue_path_from(input)
       reg_organization         = %r{#{SupportDeveloperGithub.config.github_organization}\/}
       ref_issue_url            = %r{ref https:\/\/github.com\/#{SupportDeveloperGithub.config.github_organization}\/.+\/\d+}
-      ref_completion_issue_url = %r{ref #\d+}
+      ref_completion_issue_url = %r{ref #(\d+)}
 
       if input.match(ref_issue_url).present?
         matched_word = input.match(ref_issue_url)[0]
         issue_url = matched_word.match(reg_organization).post_match
       elsif input.match(ref_completion_issue_url).present?
-        matched_word = input.match(ref_completion_issue_url)[0]
-        issue_num = matched_word.match(/#/).post_match
+        issue_num = input.match(ref_completion_issue_url)[1]
         data = issue_path.split('/')
         data[data.length - 1] = issue_num
         issue_url = data.join('/')
