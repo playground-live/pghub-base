@@ -11,7 +11,7 @@ module PgHub
       @webhook_params = params
 
       if defined? Lgtm
-        Lgtm.post_md_image(issue_path) if input.include?('LGTM') && !input.include?('[LGTM]')
+        Lgtm.post_to(issue_path) if input.include?('LGTM') && !input.include?('[LGTM]')
       end
 
       case @webhook_params[:action]
