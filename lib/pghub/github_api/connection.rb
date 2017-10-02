@@ -1,10 +1,10 @@
-require 'support_developer_github/config'
+require 'pgHub/config'
 require 'faraday'
 
 class GithubAPI
   module Connection
     def connection
-      Faraday.new(url: "https://api.github.com/repos/#{SupportDeveloperGithub.config.github_organization}",
+      Faraday.new(url: "https://api.github.com/repos/#{PgHub.config.github_organization}",
                   ssl: { verify: true }) do |faraday|
         faraday.request :multipart
         faraday.request :url_encoded

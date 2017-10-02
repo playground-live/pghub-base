@@ -1,11 +1,11 @@
-require 'support_developer_github/base/version'
-require 'support_developer_github/engine'
-require 'support_developer_github/config'
-require 'support_developer_github/github_api'
+require 'pghub/base/version'
+require 'pghub/engine'
+require 'pghub/config'
+require 'pghub/github_api'
 # TODO : lgtmに移植
 require 'mechanize'
 
-module SupportDeveloperGithub
+module PgHub
   module Base
     # TODO : lgtmに移植
     LGTM_MARKDOWN_PATTERN = /(!\[LGTM\]\(.+\))\]/
@@ -19,7 +19,7 @@ module SupportDeveloperGithub
 
       case @webhook_params[:action]
       when 'opened', 'edited', 'reopened', 'submitted', 'created'
-        # TODO : issue-titleをincludeしているかどうか判定
+        # TODO : issue_titleをincludeしているかどうか判定
         # TODO : 以下の２行をissue_titleに移植
         issue_client = GithubAPI.new(issue_path_from(input))
         content = issue_client.get_title
@@ -74,8 +74,8 @@ module SupportDeveloperGithub
 
     # TODO : issue_titleに移植
     def issue_path_from(input)
-      reg_organization         = %r{#{SupportDeveloperGithub.config.github_organization}\/}
-      ref_issue_url            = %r{ref https:\/\/github.com\/#{SupportDeveloperGithub.config.github_organization}\/.+\/\d+}
+      reg_organization         = %r{#{PgHub.config.github_organization}\/}
+      ref_issue_url            = %r{ref https:\/\/github.com\/#{PgHub.config.github_organization}\/.+\/\d+}
       ref_completion_issue_url = %r{ref #(\d+)}
 
       if input.match(ref_issue_url).present?
@@ -94,7 +94,7 @@ module SupportDeveloperGithub
     end
 
     def issue_path
-      reg_organization = %r{#{SupportDeveloperGithub.config.github_organization}\/}
+      reg_organization = %r{#{PgHub.config.github_organization}\/}
 
       if %w[opened edited reopened created submitted].include?(@webhook_params[:action])
         path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]

@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "support_developer_github/base/version"
+require "pghub/base/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "support_developer_github-base"
-  spec.version       = SupportDeveloperGithub::Base::VERSION
+  spec.name          = "pghub-base"
+  spec.version       = PgHub::Base::VERSION
   spec.authors       = ["Ebinuma Kenichi"]
   spec.email         = ["ktennis.mqekr12@gmail.com"]
 
   spec.summary       = %q{Support developer using Github.}
-  spec.description   = %q{This gem is base for any gems like support_developer_github-xxx}
+  spec.description   = %q{This gem is base for any gems like pghub-xxx}
   spec.homepage      = "https://github.com/ebkn12"
   spec.license       = "MIT"
 
