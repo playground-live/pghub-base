@@ -22,7 +22,7 @@ module PgHub
         return unless VALID_ACTIONS.include?(@webhook_params[:action])
 
         if defined? Lgtm
-          Lgtm.post_to(issue_path) if input.include?('LGTM')
+          Lgtm.post(issue_path) if input.include?('LGTM')
         end
 
         if defined? IssueTitle
