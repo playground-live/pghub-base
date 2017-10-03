@@ -25,7 +25,9 @@ module PgHub
           Lgtm.post_to(issue_path) if input.include?('LGTM')
         end
 
-        IssueTitle.post_to(issue_path, input) if defined? IssueTitle
+        if defined? IssueTitle
+          IssueTitle.post_to(issue_path, input) if input.include?('ref')
+        end
       end
 
       private
