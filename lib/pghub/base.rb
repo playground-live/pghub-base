@@ -26,7 +26,7 @@ module PgHub
         end
 
         if defined? IssueTitle
-          IssueTitle.post_to(issue_path, input) if input.include?('ref')
+          IssueTitle.post(issue_path, input) if input.include?('ref')
         end
       end
 
