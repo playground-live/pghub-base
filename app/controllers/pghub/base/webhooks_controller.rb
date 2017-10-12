@@ -13,20 +13,19 @@ module Pghub::Base
     ]
 
     def create
-      binding.pry
       @webhook_params = params[:webhook]
 
       return unless VALID_ACTIONS.include?(@webhook_params[:action])
 
-      if defined? PgHub::Lgtm
-        PgHub::Lgtm.post(issue_path) if input.include?('LGTM')
+      if defined? Pghub::Lgtm
+        Pghub::Lgtm.post(issue_path) if input.include?('LGTM')
       end
 
-      if defined? PgHub::IssueTitle
-        PgHub::IssueTitle.post(issue_path, input) if input.include?('ref')
+      if defined? Pghub::IssueTitle
+        Pghub::IssueTitle.post(issue_path, input) if input.include?('ref')
       end
 
-      render :nothing
+      head 200
     end
 
     private
