@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "support_developer_github/base"
+require "pghub/base"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
