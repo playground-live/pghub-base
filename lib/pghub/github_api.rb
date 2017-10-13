@@ -1,7 +1,7 @@
 require 'pghub/github_api/issue'
 require 'pghub/github_api/comment'
 
-class UndefinedIssuePath < StarndardError; end
+class UndefinedIssuePath < StandardError; end
 
 class GithubAPI
   include Issue
