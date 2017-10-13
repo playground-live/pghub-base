@@ -5,7 +5,7 @@ module PgHub
     @config ||= PgHub::Config.new
   end
 
-  def self.configure(&block)
+  def self.configure(&_block)
     yield(config) if block_given?
   end
 end

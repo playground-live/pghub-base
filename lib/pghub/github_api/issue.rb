@@ -1,5 +1,3 @@
-# TODO : issue_titleに移植
-
 require 'pghub/config'
 require 'pghub/github_api/connection'
 
