@@ -1,8 +1,8 @@
 require 'pghub/config'
 
-module PgHub
+module Pghub
   def self.config
-    @config ||= PgHub::Config.new
+    @config ||= Pghub::Config.new
   end
 
   def self.configure(&_block)

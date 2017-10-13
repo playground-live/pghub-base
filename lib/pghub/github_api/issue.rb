@@ -13,7 +13,7 @@ class GithubAPI
     private
 
     def issue_response
-      response = connection.get("#{issue_path}?access_token=#{PgHub.config.github_access_token}")
+      response = connection.get("#{issue_path}?access_token=#{Pghub.config.github_access_token}")
       JSON.parse(response.body)
     end
   end

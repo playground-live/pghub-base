@@ -7,7 +7,7 @@ class GithubAPI
 
     def post(content)
       connection.post do |req|
-        req.url "#{issue_path}/comments?access_token=#{PgHub.config.github_access_token}"
+        req.url "#{issue_path}/comments?access_token=#{Pghub.config.github_access_token}"
         req.headers['Content-Type'] = 'application/json'
         req.body = { body: content }.to_json
       end

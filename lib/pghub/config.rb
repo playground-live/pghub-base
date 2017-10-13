@@ -1,4 +1,4 @@
-module PgHub
+module Pghub
   class Config
     attr_accessor :github_organization, :github_access_token
 

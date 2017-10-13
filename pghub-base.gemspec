@@ -1,38 +1,24 @@
-# coding: utf-8
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+$:.push File.expand_path("../lib", __FILE__)
+
+# Maintain your gem's version:
 require "pghub/base/version"
 
-Gem::Specification.new do |spec|
-  spec.name          = "pghub-base"
-  spec.version       = PgHub::Base::VERSION
-  spec.authors       = ["Ebinuma Kenichi"]
-  spec.email         = ["ktennis.mqekr12@gmail.com"]
+# Describe your gem and declare its dependencies:
+Gem::Specification.new do |s|
+  s.name        = "pghub-base"
+  s.version     = Pghub::Base::VERSION
+  s.authors     = ["ebkn12"]
+  s.email       = ["ktennis.mqekr12@gmail.com"]
+  s.homepage    = "https://github.com/ebkn12"
+  s.summary     = "Support developer using Github."
+  s.description = "This gem is base for any gems like pghub-xxx"
+  s.license     = "MIT"
 
-  spec.summary       = %q{Support developer using Github.}
-  spec.description   = %q{This gem is base for any gems like pghub-xxx}
-  spec.homepage      = "https://github.com/ebkn12"
-  spec.license       = "MIT"
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
+  s.add_dependency "rails", "~> 5.1.4"
+  s.add_dependency "faraday"
 
-  spec.files         = `git ls-files -z`.split("\x0").reject do |f|
-    f.match(%r{^(test|spec|features)/})
-  end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.require_paths = ["lib"]
-
-  spec.add_development_dependency "bundler", "~> 1.15"
-  spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-
-  spec.add_dependency "faraday"
+  s.add_development_dependency "sqlite3"
+  s.add_development_dependency "pry-rails"
 end

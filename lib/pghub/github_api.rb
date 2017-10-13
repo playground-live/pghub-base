@@ -1,6 +1,8 @@
 require 'pghub/github_api/issue'
 require 'pghub/github_api/comment'
 
+class UndefinedIssuePath < StandardError; end
+
 class GithubAPI
   include Issue
   include Comment
@@ -12,7 +14,7 @@ class GithubAPI
   private
 
   def issue_path
-    raise '@issue_path is not defined.' if @issue_path.blank?
+    raise UndefinedIssuePath, '@issue_path is not defined.' if @issue_path.blank?
     @issue_path
   end
 end
