@@ -1,8 +1,13 @@
 # Pghub::Base
-Short description and motivation.
+This gem offers base function for all `Pghub` gems.
+
+[Pghub-lgtm](https://github.com/playground-live/pghub-lgtm)
+
+[Pghub-issue_title](https://github.com/playground-live/pghub-issue_title)
 
 ## Usage
-How to use my plugin.
+You don't have to operate this gem.
+Look at other `Pghub` gems.
 
 ## Installation
 Add this line to your application's Gemfile:
