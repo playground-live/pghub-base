@@ -1,4 +1,4 @@
-require 'pgHub/config'
+require 'pghub/config'
 require 'faraday'
 
 class GithubAPI
