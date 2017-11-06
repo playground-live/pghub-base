@@ -10,7 +10,7 @@ module Pghub::Base
       edited
       review_requested
       submitted
-    ]
+    ].freeze
 
     def create
       @webhook_params = params[:webhook]
