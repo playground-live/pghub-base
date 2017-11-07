@@ -25,8 +25,8 @@ module Pghub::Base
         Pghub::IssueTitle.post(issue_path, input) if input.include?('ref')
       end
 
-      if defined? Pghub::Assign
-        Pghub::Assign.assign(issue_path) if @webhook_params[:action] == 'opened'
+      if (defined? Pghub::Assign) && !Pghub.config.assign_numbers.empty?
+        Pghub::Assign.post(issue_path, opened_user) if @webhook_params[:action] == 'opened'
       end
 
       head 200
@@ -51,6 +51,18 @@ module Pghub::Base
       path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]
 
       path.match(reg_organization).post_match
+    end
+
+    def opened_user
+      if @webhook_params[:comment]
+        @webhook_params[:comment][:user][:login]
+      elsif @webhook_params[:review]
+        @webhook_params[:review][:user][:login]
+      elsif @webhook_params[:issue]
+        @webhook_params[:issue][:user][:login]
+      else
+        @webhook_params[:pull_request][:user][:login]
+      end
     end
   end
 end
