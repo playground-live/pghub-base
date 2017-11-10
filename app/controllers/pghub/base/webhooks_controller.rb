@@ -25,7 +25,7 @@ module Pghub::Base
         Pghub::IssueTitle.post(issue_path, input) if input.include?('ref')
       end
 
-      if (defined? Pghub::Assign) && !Pghub.config.assign_numbers.empty?
+      if (defined? Pghub::Assign)
         Pghub::Assign.post(issue_path, opened_user) if @webhook_params[:action] == 'opened'
       end
 
