@@ -31,37 +31,33 @@ module Pghub::Base
 
     private
 
-    def webhook_params
-      params[:webhook]
-    end
-
     def action
-      webhook_params[:action]
+      params[:webhook][:action]
     end
 
-    def permitted_params
-      if webhook_params[:comment]
-        webhook_params[:comment]
-      elsif webhook_params[:review]
-        webhook_params[:review]
-      elsif webhook_params[:issue]
-        webhook_params[:issue]
+    def webhook_params
+      if params[:webhook][:comment]
+        params[:webhook][:comment]
+      elsif params[:webhook][:review]
+        params[:webhook][:review]
+      elsif params[:webhook][:issue]
+        params[:webhook][:issue]
       else
-        webhook_params[:pull_request]
+        params[:webhook][:pull_request]
       end
     end
 
     def input
-      permitted_params[:body]
+      webhook_params[:body]
     end
 
     def opened_pr_user
-      permitted_params[:user][:login]
+      webhook_params[:user][:login]
     end
 
     def issue_path
       reg_organization = %r{#{Pghub.config.github_organization}\/}
-      path = webhook_params[:issue].present? ? webhook_params[:issue][:url] : webhook_params[:pull_request][:issue_url]
+      path = params[:webhook][:issue].present? ? params[:webhook][:issue][:url] : params[:webhook][:pull_request][:issue_url]
 
       path.match(reg_organization).post_match
     end
