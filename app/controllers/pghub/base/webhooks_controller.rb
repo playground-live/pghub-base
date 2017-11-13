@@ -55,15 +55,15 @@ module Pghub::Base
       permitted_params[:body]
     end
 
+    def opened_user
+      permitted_params[:user][:login]
+    end
+
     def issue_path
       reg_organization = %r{#{Pghub.config.github_organization}\/}
       path = webhook_params[:issue].present? ? webhook_params[:issue][:url] : webhook_params[:pull_request][:issue_url]
 
       path.match(reg_organization).post_match
-    end
-
-    def opened_user
-      permitted_params[:user][:login]
     end
   end
 end
