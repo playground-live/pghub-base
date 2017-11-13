@@ -23,7 +23,7 @@ module Pghub::Base
       end
 
       if defined? Pghub::AutoAssign
-        Pghub::AutoAssign.post(issue_path, opened_user) if action == 'opened'
+        Pghub::AutoAssign.post(issue_path, opened_pr_user) if action == 'opened'
       end
 
       head 200
@@ -55,7 +55,7 @@ module Pghub::Base
       permitted_params[:body]
     end
 
-    def opened_user
+    def opened_pr_user
       permitted_params[:user][:login]
     end
 
