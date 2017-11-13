@@ -36,15 +36,16 @@ module Pghub::Base
     end
 
     def webhook_params
-      if params[:webhook][:comment]
-        params[:webhook][:comment]
-      elsif params[:webhook][:review]
-        params[:webhook][:review]
-      elsif params[:webhook][:issue]
-        params[:webhook][:issue]
-      else
-        params[:webhook][:pull_request]
-      end
+      @webhook_params ||=
+        if params[:webhook][:comment]
+          params[:webhook][:comment]
+        elsif params[:webhook][:review]
+          params[:webhook][:review]
+        elsif params[:webhook][:issue]
+          params[:webhook][:issue]
+        else
+          params[:webhook][:pull_request]
+        end
     end
 
     def input
