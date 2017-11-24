@@ -2,7 +2,6 @@ require_dependency "pghub/base/application_controller"
 
 module Pghub::Base
   class WebhooksController < ApplicationController
-    @webhook_params = nil
     VALID_ACTIONS = %w[
       opened
       edited
@@ -13,9 +12,7 @@ module Pghub::Base
     ].freeze
 
     def create
-      @webhook_params = params[:webhook]
-
-      return unless VALID_ACTIONS.include?(@webhook_params[:action])
+      return unless VALID_ACTIONS.include?(action)
 
       if defined? Pghub::Lgtm
         Pghub::Lgtm.post(issue_path) if input.include?('LGTM')
@@ -25,26 +22,43 @@ module Pghub::Base
         Pghub::IssueTitle.post(issue_path, input) if input.include?('ref')
       end
 
+      if defined? Pghub::AutoAssign
+        Pghub::AutoAssign.post(issue_path, opened_pr_user) if action == 'opened'
+      end
+
       head 200
     end
 
     private
 
+    def action
+      params[:webhook][:action]
+    end
+
+    def webhook_params
+      @webhook_params ||=
+        if params[:webhook][:comment]
+          params[:webhook][:comment]
+        elsif params[:webhook][:review]
+          params[:webhook][:review]
+        elsif params[:webhook][:issue]
+          params[:webhook][:issue]
+        else
+          params[:webhook][:pull_request]
+        end
+    end
+
     def input
-      if @webhook_params[:comment]
-        @webhook_params[:comment][:body]
-      elsif @webhook_params[:review]
-        @webhook_params[:review][:body]
-      elsif @webhook_params[:issue]
-        @webhook_params[:issue][:body]
-      else
-        @webhook_params[:pull_request][:body]
-      end
+      webhook_params[:body]
+    end
+
+    def opened_pr_user
+      webhook_params[:user][:login]
     end
 
     def issue_path
       reg_organization = %r{#{Pghub.config.github_organization}\/}
-      path = @webhook_params[:issue].present? ? @webhook_params[:issue][:url] : @webhook_params[:pull_request][:issue_url]
+      path = params[:webhook][:issue].present? ? params[:webhook][:issue][:url] : params[:webhook][:pull_request][:issue_url]
 
       path.match(reg_organization).post_match
     end
