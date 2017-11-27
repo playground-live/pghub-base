@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    pghub-base (2.0.0)
+    pghub-base (1.1.0)
       faraday
       rails
 
