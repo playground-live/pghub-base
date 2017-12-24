@@ -23,7 +23,9 @@ module Pghub::Base
       end
 
       if defined? Pghub::AutoAssign
-        Pghub::AutoAssign.post(issue_path, opened_pr_user) if action == 'opened'
+        if params[:webhook][:pull_request].present? && action == 'opened'
+          Pghub::AutoAssign.post(issue_path, opened_pr_user)
+        end
       end
 
       head 200
